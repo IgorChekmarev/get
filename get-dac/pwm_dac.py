@@ -10,12 +10,12 @@ class PWM_DAC:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.gpio_pin, GPIO.OUT, initial=0)
         
-        # Создаем PWM объект
+
         self.pwm = GPIO.PWM(self.gpio_pin, pwm_frequency)
-        self.pwm.start(0)  # Запускаем с 0% заполнения
+        self.pwm.start(0) 
 
     def deinit(self):
-        self.pwm.stop()  # Останавливаем PWM
+        self.pwm.stop()  
         GPIO.output(self.gpio_pin, 0)
         GPIO.cleanup()
     
@@ -25,21 +25,21 @@ class PWM_DAC:
             print("устанавливаем 0.0 В")
             voltage = 0.0
         
-        # Преобразуем напряжение в коэффициент заполнения (duty cycle)
+
         duty_cycle = (voltage / self.dynamic_range) * 100
         
-        # Устанавливаем коэффициент заполнения
+
         self.pwm.ChangeDutyCycle(duty_cycle)
         
         if self.verbose:
-            print(f"Установлено напряжение: {voltage:.2f} В, заполнение: {duty_cycle:.1f}%")
+            print(f"Установлено напряжение: {voltage:.2f} В, Коэффициент заполнения: {duty_cycle:.1f}")
 
 if __name__ == "__main__":
     try:
-        dac = PWM_DAC(12, 500, 3.29, True)
+        dac = PWM_DAC(12, 500, 3.28, True)
         while True:
             try:
-                user_input = input("Введите напряжение в вольтах: ").strip().replace(',', '.')
+                user_input = input("Введите напряжение в вольтах: ")
                 voltage = float(user_input)
                 dac.set_voltage(voltage)
 

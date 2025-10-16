@@ -12,18 +12,20 @@ class R2R_DAC:
         GPIO.output(self.gpio_bits, 0)
         GPIO.cleanup()
     
-    def set_number(self, number):
-        for i in range(8):
-            GPIO.output(self.gpio_bits[i], [int(element) for element in bin(number)[2:].zfill(8)][i])
-    
-    def set_voltage(self, voltage):
 
+
+    def set_voltage(self, voltage):
         if not (0.0 <= voltage <= self.dynamic_range):
             print(f"Напряжение выходит за динамический диапазон ЦАП (0.00 - {self.dynamic_range: .2f}) В")
             print("устанавливаем 0.0 В")
+            for i in range(8):
+                GPIO.output(self.gpio_bits[i], [int(element) for element in bin(0)[2:].zfill(8)][i])
             return 0
+        number = int(voltage / self.dynamic_range * 255)
+        for i in range(8):
+            GPIO.output(self.gpio_bits[i], [int(element) for element in bin(number)[2:].zfill(8)][i])
+
         
-        return int(voltage / self.dynamic_range * 255)
 
 if __name__ == "__main__":
     try:
@@ -33,8 +35,7 @@ if __name__ == "__main__":
             try:
                 voltage = float(input("Введите напряжение в вольтах: "))
                 
-                number = dac.set_voltage(voltage)
-                dac.set_number(number)
+                dac.set_voltage(voltage)
 
             except ValueError:
                 print("Вы ввели не число. Попробуйте еще раз\n")

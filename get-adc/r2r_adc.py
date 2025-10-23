@@ -65,7 +65,7 @@ if __name__ == "__main__":
         while True:
             voltage = adc.get_sc_voltage()
             print(f"Измеренное напряжение: {voltage:.3f} В")
-            time.sleep(0.01)
+            time.sleep(1)
             
     except KeyboardInterrupt:
         print("\nИзмерение прервано")

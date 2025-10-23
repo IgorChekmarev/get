@@ -15,19 +15,19 @@ class R2R_ADC:
         GPIO.setup(self.bits_gpio, GPIO.OUT, initial=0)
         GPIO.setup(self.comp_gpio, GPIO.IN)
 
-    def __del__(self):
+    def deinit(self):
         GPIO.output(self.bits_gpio, 0)
         GPIO.cleanup()
-        if self.verbose:
-            print("GPIO очищен")
+
+    def dec2bin(self, value):
+        return [int(element) for element in bin(value)[2:].zfill(8)]
 
     def number_to_dac(self, number):
-        for i, pin in enumerate(self.bits_gpio):
-            bit_value = (number >> i) & 1
-            GPIO.output(pin, bit_value)
+        for i in range(8):
+            GPIO.output(self.bits_gpio[i], (self.dec2bin(number))[i])
         
         if self.verbose:
-            print(f"Подано число: {number} (бинарно: {bin(number)})")
+            print(f"Подано число: {number} (бинарно: {self.dec2bin(number)})")
 
     def sequential_counting_adc(self):
         max_value = 2**len(self.bits_gpio) - 1
@@ -58,17 +58,16 @@ class R2R_ADC:
 
 if __name__ == "__main__":
     try:
-        adc = R2R_ADC(dynamic_range=3.276, compare_time=0.01, verbose=True)
+        adc = R2R_ADC(dynamic_range=3.278, compare_time=0.01, verbose=True)
         
         print("АЦП запущен. Для остановки нажмите Ctrl+C")
         
         while True:
             voltage = adc.get_sc_voltage()
             print(f"Измеренное напряжение: {voltage:.3f} В")
-            time.sleep(1)
+            time.sleep(0.01)
             
     except KeyboardInterrupt:
         print("\nИзмерение прервано")
     finally:
-        if 'adc' in locals():
-            adc.__del__()
+        adc.deinit()

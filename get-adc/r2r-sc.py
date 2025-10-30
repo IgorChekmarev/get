@@ -14,7 +14,7 @@ def plot_voltage_vs_time(time, voltage, max_voltage, duration):
     plt.show()
 
 class R2R_ADC:
-    def __init__(self, dynamic_range, compare_time=0.01, verbose=False):
+    def __init__(self, dynamic_range, compare_time=0.00001, verbose=False):
         self.dynamic_range = dynamic_range
         self.verbose = verbose
         self.compare_time = compare_time
@@ -48,7 +48,7 @@ class R2R_ADC:
         
         for number in range(max_value + 1):
             self.number_to_dac(number)
-            time.sleep(self.compare_time)
+            
             comparator_state = GPIO.input(self.comp_gpio)
             
             if self.verbose:
@@ -75,7 +75,7 @@ duration = 3.0
 
 if __name__ == "__main__":
     try:
-        adc = R2R_ADC(dynamic_range=3.278, compare_time=0.01, verbose=True)
+        adc = R2R_ADC(dynamic_range=3.278, compare_time=0.00001, verbose=True)
         time_start = time.time()
         
         while (time.time() - time_start)<duration:

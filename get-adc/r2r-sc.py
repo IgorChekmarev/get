@@ -13,6 +13,17 @@ def plot_voltage_vs_time(time, voltage, max_voltage, duration):
     plt.grid()
     plt.show()
 
+def plot_sampling_period_hist(t):
+    sampling_periods = []
+    for i in range(len(t)-1):
+        sampling_periods.append(t[i+1]-t[i])
+    plt.figure(figsize = (10,6))
+    plt.hist(sampling_periods)
+    plt.title("Распределение периодов дискретизации измерений по времени на одно измерение")
+    plt.xlim(0, 0.6)
+    plt.grid()
+    plt.show()
+
 class R2R_ADC:
     def __init__(self, dynamic_range, compare_time=0.00001, verbose=False):
         self.dynamic_range = dynamic_range
@@ -87,6 +98,7 @@ if __name__ == "__main__":
             print(time_values)
 
         plot_voltage_vs_time(time_values, voltage_values, 3.28, duration)
+        plot_sampling_period_hist(time_values)
         print(time_values)
         print(voltage_values)
     except KeyboardInterrupt:

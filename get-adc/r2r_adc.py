@@ -60,7 +60,7 @@ class R2R_ADC:
         low = 0
         high = 255
         result = 0
-        for i in range(8):
+        for i in range(7, -1, -1):
             med = (low + high)//2
             self.number_to_dac(med)
             time.sleep(self.compare_time)
@@ -69,10 +69,10 @@ class R2R_ADC:
             comp = GPIO.input(self.comp_gpio)
             if comp == 1:
                 low = med+1
-                result = med
+                result |= (1<<i)
             else:
                 high = med-1
-                result = med
+
         return result
 
     def get_sar_voltage(self):

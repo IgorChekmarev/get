@@ -60,7 +60,7 @@ class R2R_ADC:
         low = 0
         high = 255
         result = 0
-        for i in range(7, -1, -1):
+        for i in range(8):
             med = (low + high)//2
             self.number_to_dac(med)
             time.sleep(self.compare_time)
@@ -68,11 +68,11 @@ class R2R_ADC:
 
             comp = GPIO.input(self.comp_gpio)
             if comp == 1:
-                low = med+1
-                result |= (1<<i)
+                high = med+1
+                result = med
             else:
-                high = med-1
-
+                low = med-1
+        print(result)
         return result
 
     def get_sar_voltage(self):
@@ -83,7 +83,7 @@ class R2R_ADC:
 
 if __name__ == "__main__":
     try:
-        adc = R2R_ADC(dynamic_range=3.278, compare_time=0.01, verbose=True)
+        adc = R2R_ADC(dynamic_range=3.278, compare_time=0.1, verbose=True)
         
         print("АЦП запущен. Для остановки нажмите Ctrl+C")
         

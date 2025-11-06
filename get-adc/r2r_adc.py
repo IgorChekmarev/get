@@ -56,6 +56,30 @@ class R2R_ADC:
         
         return voltage
 
+    def successive_approximation_adc(self):
+        low = 0
+        high = 255
+        result = 0
+        for i in range(8):
+            med = (low + high)//2
+            self.number_to_dac(med)
+            time.sleep(self.compare_time)
+
+
+            comp = GPIO.input(self.comp_gpio)
+            if comp == 1:
+                low = med+1
+                result = med
+            else:
+                high = med-1
+                result = med
+        return result
+
+    def get_sar_voltage(self):
+        value = self.successive_approximation_adc()
+        return value*self.dynamic_range/255
+
+
 
 if __name__ == "__main__":
     try:
@@ -64,7 +88,7 @@ if __name__ == "__main__":
         print("АЦП запущен. Для остановки нажмите Ctrl+C")
         
         while True:
-            voltage = adc.get_sc_voltage()
+            voltage = adc.get_sar_voltage()
             print(f"Измеренное напряжение: {voltage:.3f} В")
             time.sleep(1)
             
